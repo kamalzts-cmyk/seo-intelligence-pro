@@ -1,0 +1,1 @@
+services:\n  - type: web\n    name: seo-intelligence-pro\n    env: python\n    buildCommand: "pip install -r requirements.txt"\n    startCommand: "gunicorn app:app"\n

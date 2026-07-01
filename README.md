@@ -1,0 +1,1 @@
+# SEO Intelligence Pro V1\n\nStandalone audit platform for Technical SEO, AEO, GEO, AI Search, Schema, E-E-A-T, Content, and Performance-style checks.\n\nNo API key required for V1.\n\nRender build command: `pip install -r requirements.txt`\n\nRender start command: `gunicorn app:app`\n

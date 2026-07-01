@@ -1,0 +1,124 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>{{ app_name }}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+<div class="badge">Technical SEO • AEO • GEO • AI Search</div>
+<h1>SEO Intelligence Pro</h1>
+<p>Enterprise-style audit engine with issue diagnosis, root causes, developer instructions, AI recommendations, best practices, and exports.</p>
+</header>
+
+<section class="card">
+<form method="POST">
+<div class="formgrid">
+<div>
+<label>Website URL</label>
+<input name="url" value="{{ url }}" placeholder="https://example.com" required>
+</div>
+<div>
+<label>Max Pages</label>
+<input name="max_pages" type="number" min="1" max="100" value="{{ max_pages }}">
+</div>
+</div>
+<button type="submit">Run Full Audit</button>
+</form>
+</section>
+
+{% if report %}
+<section class="scoregrid">
+{% for name, score in report.scores.items() %}
+<div class="score card"><span>{{ name }}</span><strong>{{ score }}</strong></div>
+{% endfor %}
+</section>
+
+<section class="card">
+<div class="headrow">
+<div>
+<h2>Executive Summary</h2>
+<p class="muted">{{ report.start }}</p>
+</div>
+<a class="btn secondary" href="/export-csv">Export CSV</a>
+</div>
+<div class="summary">
+<div><strong>{{ report.summary.pages }}</strong><span>Pages Crawled</span></div>
+<div><strong>{{ report.summary.issues }}</strong><span>Total Issues</span></div>
+<div><strong>{{ report.summary.links }}</strong><span>Internal Links</span></div>
+<div><strong>{{ report.severity.get("Critical", 0) }}</strong><span>Critical</span></div>
+<div><strong>{{ report.severity.get("High", 0) }}</strong><span>High</span></div>
+<div><strong>{{ report.severity.get("Medium", 0) }}</strong><span>Medium</span></div>
+</div>
+</section>
+
+<section class="card">
+<h2>Issue Breakdown</h2>
+<div class="chips">
+{% for category, count in report.category.items() %}
+<span>{{ category }}: {{ count }}</span>
+{% endfor %}
+</div>
+</section>
+
+<section class="card">
+<h2>Detailed Issues & Fix Recommendations</h2>
+{% for issue in report.issues %}
+<details class="issue">
+<summary>
+<span class="sev {{ issue.severity|lower }}">{{ issue.severity }}</span>
+<strong>{{ issue.issue }}</strong>
+<em>{{ issue.category }}</em>
+</summary>
+<div class="issuebody">
+<p><strong>Affected URL:</strong><br><span class="url">{{ issue.url }}</span></p>
+{% if issue.detail %}<p><strong>Detail:</strong> {{ issue.detail }}</p>{% endif %}
+
+<h3>Why This Matters</h3><p>{{ issue.why }}</p>
+
+<h3>SEO Impact</h3>
+<table>
+<tr><th>Area</th><th>Impact</th></tr>
+{% for area, stars in issue.impact.items() %}
+<tr><td>{{ area }}</td><td>{{ stars }}</td></tr>
+{% endfor %}
+</table>
+
+<h3>Root Cause</h3><p>{{ issue.root }}</p>
+<h3>How to Fix</h3><p>{{ issue.fix }}</p>
+<h3>Developer Implementation</h3><pre>{{ issue.developer }}</pre>
+<h3>AI Recommendation</h3><p>{{ issue.ai }}</p>
+<h3>Best Practice</h3><p>{{ issue.best }}</p>
+<h3>Official Reference</h3><p><a href="{{ issue.reference }}" target="_blank">{{ issue.reference }}</a></p>
+</div>
+</details>
+{% endfor %}
+</section>
+
+<section class="card">
+<h2>Crawled Pages</h2>
+<div class="tablewrap">
+<table>
+<tr><th>URL</th><th>Status</th><th>Title</th><th>Words</th><th>Schema</th><th>AEO</th><th>GEO</th></tr>
+{% for page in report.pages %}
+<tr>
+<td class="url">{{ page.url }}</td>
+<td>{{ page.status }}</td>
+<td>{{ page.title[:80] }}</td>
+<td>{{ page.word_count }}</td>
+<td>{{ page.schema_count }}</td>
+<td>{{ "Yes" if page.aeo else "No" }}</td>
+<td>{{ "Yes" if page.geo else "No" }}</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+</section>
+{% endif %}
+</div>
+</body>
+</html>
